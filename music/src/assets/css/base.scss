@@ -7,7 +7,7 @@ html, body{
   height: 100%;
   overflow: hidden;
   // 解决IScroll拖拽卡顿问题
-  //touch-action: none;
+  touch-action: none;
 }
 body{
   @include font_size($font_medium);

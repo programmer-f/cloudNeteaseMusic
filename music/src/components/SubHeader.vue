@@ -1,7 +1,7 @@
 <template>
   <div class="header" @click="theme">
-    <div class="header-left"></div>
-    <p class="header-title">知播渔音乐</p>
+    <div class="header-left" @click.stop="back"></div>
+    <p class="header-title">{{title}}</p>
     <div class="header-right"></div>
   </div>
 </template>
@@ -22,6 +22,16 @@
           this.index = 0;
         }
         document.documentElement.setAttribute('data-theme',this.themes[this.index]);
+      },
+      back(){
+        window.history.back();
+      }
+    },
+    props:{
+      title:{
+        type:String,
+        default:'',
+        required:true
       }
     }
   }
@@ -45,10 +55,10 @@
       /*background-color: #000000;*/
     }
     .header-left{
-      @include bg_img('../assets/images/logo')
+      @include bg_img('../assets/images/back')
     }
     .header-right{
-      @include bg_img('../assets/images/account')
+      @include bg_img('../assets/images/more')
     }
 
     .header-title {
@@ -56,7 +66,8 @@
       line-height: 100px;
       color: #fff;
       font-weight: bold;
-      @include font_size($font_medium)
+      @include font_size($font_medium);
+      @include no-wrap();
     }
   }
 </style>

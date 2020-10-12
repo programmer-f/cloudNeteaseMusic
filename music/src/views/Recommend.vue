@@ -1,24 +1,90 @@
 <template>
-  <div>recommend</div>
+    <div class="recommend">
+      <ScrollView>
+        <div>
+          <Banner :banners="banners"></Banner>
+          <Personalized :personalized="personalized" :title="'推荐歌单'" @select="fatherSelectItem"></Personalized>
+          <Personalized :personalized="albums"  :title="'最新专辑'"></Personalized>
+          <SongList :songs="songs"></SongList>
+        </div>
+      </ScrollView>
+      <router-view></router-view>
+    </div>
 </template>
 
 <script>
-  import {getBanner} from "../api/index";
+  import {getBanner,getPersonalized,getNewAlbum,getNewSong} from "../api/index";
+  import Banner from '../components/Banner'
+  import Personalized from '../components/Personalized'
+  import SongList from '../components/SongList'
+  import ScrollView from '../components/ScrollView'
 
   export default {
-        name: "Recommend",
-    created() {
-          getBanner()
-            .then(function (data) {
-            console.log(data);
+    name: "Recommend",
+    components:{
+      Banner,
+      Personalized,
+      SongList,
+      ScrollView
+    },
+    methods:{
+      fatherSelectItem(id){
+          this.$router.push({
+            path:`/recommend/detail/${id}`
           })
-            .catch((err)=>{
-              console.log(err);
-            })
+      }
+    },
+    data(){
+      return{
+          banners:[],
+          personalized:[],
+          albums:[],
+          songs:[]
+      }
+    },
+    created() {
+      getBanner()
+        .then((data)=>{
+          this.banners = data.banners;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      getPersonalized()
+        .then((data)=>{
+          this.personalized = data.result;
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
+
+      getNewAlbum()
+        .then((data)=>{
+          this.albums = data.albums.slice(0,6);
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
+
+      getNewSong()
+        .then((data)=>{
+          this.songs = data.result;
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
     }
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.recommend{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 184px;
+  overflow: hidden;
+}
 </style>

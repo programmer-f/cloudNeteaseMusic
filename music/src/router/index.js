@@ -7,8 +7,10 @@ Vue.use(VueRouter)
 // import Recommend from '../views/Recommend'
 // import Rank from '../views/Rank'
 // import Search from '../views/Search'
+
 // 实现组件的按需加载
 const Recommend = () => import('../views/Recommend');
+const Detail = () => import('../views/Detail');
 const Singer = () => import('../views/Singer');
 const Rank = () => import('../views/Rank');
 const Search = () => import('../views/Search');
@@ -36,7 +38,16 @@ const Search = () => import('../views/Search');
 //定义路由
 const routes = [
   { path: '/', redirect: '/recommend' },
-  { path: '/recommend', component: Recommend },
+  { path: '/recommend',
+    component: Recommend,
+    children:[
+      {
+        // 注意点: 如果是嵌套路由(子路由), 那么不用写一级路径的地址, 并且也不用写/
+        path:'detail/:id',
+        component:Detail
+      }
+    ]
+  },
   { path: '/singer', component: Singer },
   { path: '/rank', component: Rank },
   { path: '/search', component: Search },

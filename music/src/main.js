@@ -2,6 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueLazyload from 'vue-lazyload'
+Vue.use(VueLazyload,{
+  loading:'./assets/images/loading.png'
+});
 //fastclick
 import fastclick from 'fastclick'
 fastclick.attach(document.body);
