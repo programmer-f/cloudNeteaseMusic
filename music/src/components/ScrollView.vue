@@ -14,6 +14,7 @@
         this.iscroll = new IScroll(this.$refs.wrapper,{
           mouseWheel: true,
           scrollbars: false,//不需要显示滚动条
+          probeType:3,//像素级触发scroll事件
           //解决拖拽卡顿问题
           scrollX:false,
           scrollY:true,
@@ -48,6 +49,14 @@
        */
       observer.observe(this.$refs.wrapper,config);
 
+    },
+    methods:{
+      //提供一个监听滚动距离的方法给外界使用
+      scrolling(fn){
+            this.iscroll.on('scroll',function () {
+              fn(this.y)
+            })
+      }
     }
   }
 </script>

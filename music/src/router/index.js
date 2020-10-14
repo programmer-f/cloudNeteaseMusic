@@ -43,7 +43,7 @@ const routes = [
     children:[
       {
         // 注意点: 如果是嵌套路由(子路由), 那么不用写一级路径的地址, 并且也不用写/
-        path:'detail/:id',
+        path:'detail/:id/:type',
         component:Detail
       }
     ]

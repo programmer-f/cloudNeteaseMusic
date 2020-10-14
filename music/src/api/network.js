@@ -2,6 +2,7 @@ import axios from  'axios'
 
 //进行一些全局配置
 axios.defaults.baseURL = 'http://127.0.0.1:3000/';
+// axios.defaults.baseURL = 'http://192.168.31.18:3000/';
 axios.defaults.timeout = 3000;
 
 
