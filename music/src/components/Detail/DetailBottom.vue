@@ -4,7 +4,7 @@
             <div class="bottom-icon"></div>
             <div class="bottom-title">播放全部</div>
         </li>
-        <li v-for="value in playlist" :key="value.id" class="item">
+        <li v-for="value in playlist" :key="value.id" class="item" @click="selectMusic">
             <h3>{{value.name}}</h3>
             <p>{{value.al.name}}-{{value.ar[0].name}}</p>
         </li>
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
   export default {
     name: "DetailBottom",
     props: {
@@ -20,13 +21,23 @@
         default: () => [],
         required: true
       }
+    },
+    methods:{
+      ...mapActions([
+            'setFullScreen',//将 `this.setFullScreen()` 映射为 `this.$store.dispatch('setFullScreen')`
+      ]),
+      selectMusic(){
+          //触发actions里面的方法
+          // this.$store.dispatch('setFullScreen',true);
+          this.setFullScreen(true);
+      }
     }
   }
 </script>
 
 <style scoped lang="scss">
-  @import '../assets/css/mixin';
-  @import '../assets/css/variable';
+  @import '../../assets/css/mixin';
+  @import '../../assets/css/variable';
   .detail-bottom{
     width: 100%;
     li{
@@ -46,7 +57,7 @@
         width: 60px;
         height: 60px;
         margin-right: 20px;
-        @include bg_img('../assets/images/small_play')
+        @include bg_img('../../assets/images/small_play')
       }
       .bottom-title{
         @include font_color();

@@ -43,8 +43,8 @@
 </script>
 
 <style scoped lang="scss">
-  @import "../assets/css/mixin";
-  @import "../assets/css/variable";
+  @import "../../assets/css/mixin";
+  @import "../../assets/css/variable";
 .personalized{
   width: 100%;
   @include bg_sub_color();
