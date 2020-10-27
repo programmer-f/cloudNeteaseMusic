@@ -1,19 +1,25 @@
 <template>
+  <transition
+    @enter="enter"
+    @leave="leave"
+    :css="false"
+  >
     <div class="mini-player" v-show="this.isShowMiniPlayer">
       <div class="player-wrapper">
         <div class="player-left" @click="showNormalPlayer">
-          <img src="https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1578498007,3765440062&fm=26&gp=0.jpg" alt="">
+          <img :src="currentSong.picUrl" alt="" ref="cdImg">
           <div class="player-title">
-            <h3>演员</h3>
-            <p>薛之谦</p>
+            <h3>{{currentSong.name}}</h3>
+            <p>{{currentSong.singer}}</p>
           </div>
         </div>
         <div class="player-right">
-          <div class="play"></div>
+          <div class="play"  @click="play" ref="play"></div>
           <div class="list" @click.stop="showList"></div>
         </div>
       </div>
     </div>
+  </transition>
 </template>
 
 <script>
@@ -23,21 +29,49 @@
     methods: {
       ...mapActions([
         'setFullScreen',
-        'setMiniPlayer'
+        'setMiniPlayer',
+        'setListPlayer',
+        'setIsPlaying'
       ]),
       showList() {
-        this.$emit('showList');
+        this.setListPlayer(true);
       },
       showNormalPlayer(){
         this.setFullScreen(true);
         //隐藏miniPlayer
         this.setMiniPlayer(false);
+      },
+      enter(el, done){
+        Velocity(el, "transition.bounceUpIn", { duration: 300 },function () {
+          done();
+        })
+      },
+      leave(el, done){
+        Velocity(el,"transition.bounceDownOut", { duration: 300 },function () {
+          done();
+        })
+      },
+      play() {
+        this.setIsPlaying(!this.isPlaying);
       }
     },
     computed:{
       ...mapGetters([
-        'isShowMiniPlayer'
+        'isShowMiniPlayer',
+        'isPlaying',
+        'currentSong'
       ])
+    },
+    watch:{
+      isPlaying(newValue,oldValue){
+        if (newValue){
+          this.$refs.play.classList.add('active');
+          this.$refs.cdImg.classList.add('active');
+        } else{
+          this.$refs.play.classList.remove('active');
+          this.$refs.cdImg.classList.remove('active');
+        }
+      }
     }
   }
 </script>
@@ -65,12 +99,16 @@
         height: 100px;
         border-radius:50%;
         margin-right: 20px;
+        animation:sport 5s linear infinite;
+        animation-play-state: paused;
+        &.active{
+          animation-play-state:running;
+        }
       }
       .player-title{
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
         h3{
           @include font_size($font_medium);
           @include font_color();
@@ -88,6 +126,9 @@
           width: 84px;
           height: 84px;
           @include bg_img('../../assets/images/play');
+          &.active{
+            @include bg_img('../../assets/images/pause');
+          }
         }
       .list{
         width: 120px;
@@ -97,4 +138,12 @@
     }
   }
 }
+  @keyframes sport{
+    from{
+      transform:rotate(0deg);
+    }
+    to{
+      transform:rotate(360deg);
+    }
+  }
 </style>

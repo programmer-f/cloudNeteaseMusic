@@ -1,10 +1,10 @@
 <template>
     <ul class="detail-bottom">
-        <li class="bottom-top">
+        <li class="bottom-top" @click="selectAllMusic">
             <div class="bottom-icon"></div>
             <div class="bottom-title">播放全部</div>
         </li>
-        <li v-for="value in playlist" :key="value.id" class="item" @click="selectMusic">
+        <li v-for="value in playlist" :key="value.id" class="item" @click="selectMusic(value.id)">
             <h3>{{value.name}}</h3>
             <p>{{value.al.name}}-{{value.ar[0].name}}</p>
         </li>
@@ -25,11 +25,20 @@
     methods:{
       ...mapActions([
             'setFullScreen',//将 `this.setFullScreen()` 映射为 `this.$store.dispatch('setFullScreen')`
+            'setSongDetail'
       ]),
-      selectMusic(){
+      selectMusic(id){
           //触发actions里面的方法
           // this.$store.dispatch('setFullScreen',true);
           this.setFullScreen(true);
+          //调用获取歌曲详情数据的方法
+        this.setSongDetail([id]);
+      },
+      selectAllMusic(){
+        this.setFullScreen(true);
+        let ids = this.playlist.map(item => item.id);
+        // console.log(ids);
+        this.setSongDetail(ids);
       }
     }
   }

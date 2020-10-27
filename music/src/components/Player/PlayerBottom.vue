@@ -1,28 +1,168 @@
 <template>
     <div class="player-bottom">
       <div class="bottom-progress">
-        <span>00:00</span>
-        <div class="progress-bar">
-          <div class="progress-line">
+        <span ref="eleCurrentTime">00:00</span>
+        <div class="progress-bar" @click="progressClick" ref="progressBar">
+          <div class="progress-line" ref="progressLine">
             <div class="progress-dot"></div>
           </div>
         </div>
-        <span>00:00</span>
+        <span ref="eleTotalTime">00:00</span>
       </div>
       <div class="bottom-control">
-        <div class="mode"></div>
-        <div class="prev"></div>
-        <div class="play"></div>
-        <div class="next"></div>
-        <div class="favorite"></div>
+        <div class="mode loop" @click="mode" ref="mode"></div>
+        <div class="prev" @click="prev"></div>
+        <div class="play" @click="play" ref="play"></div>
+        <div class="next" @click="next"></div>
+        <div class="favorite" @click="favorite" :class="{'active':isFavorite(currentSong)}"></div>
       </div>
     </div>
 </template>
 
 <script>
-    export default {
-        name: "PlayerBottom"
+  import {mapGetters,mapActions} from 'vuex'
+  import modeType from '../../store/modeType'
+  export default {
+    name: "PlayerBottom",
+    methods: {
+      ...mapActions([
+        'setIsPlaying',
+        'setModeType',
+        'setCurrentIndex',
+        'setCurrentTime',
+        'setFavoriteSong'
+      ]),
+      play() {
+          this.setIsPlaying(!this.isPlaying);
+      },
+      prev(){
+          this.setCurrentIndex(this.currentIndex - 1);
+      },
+      next(){
+        this.setCurrentIndex(this.currentIndex + 1);
+      },
+      mode(){
+        if (this.modeType === modeType.loop){
+          this.setModeType(modeType.one);
+        } else if(this.modeType === modeType.one){
+          this.setModeType(modeType.shuffle);
+        }else if(this.modeType === modeType.shuffle){
+          this.setModeType(modeType.loop);
+        }
+      },
+      favorite(){
+        this.setFavoriteSong(this.currentSong);
+      },
+      //判断当前歌曲是否被收藏
+      isFavorite(song){
+        let result = this.favoriteList.find(currentValue =>{
+          return currentValue.id === song.id;
+        });
+        return result !== undefined;
+      },
+      progressClick(e){
+        //1.计算进度条的位置
+
+        //进度条距离左边的距离
+        // let normalLeft = e.target.offsetLeft;
+        let normalLeft = this.$refs.progressBar.offsetLeft;
+        //鼠标点击距离左边的距离
+        let eventLeft = e.pageX;
+        //计算出来的距离
+        let clickLeft = eventLeft - normalLeft;
+        //进度条的总宽度
+        // let progressWidth = e.target.offsetWidth;
+        let progressWidth = this.$refs.progressBar.offsetWidth;
+        //计算出来的距离 / 进度条的总宽度
+        let value = clickLeft / progressWidth;
+        // console.log('这里有bug',value * 100 + '%');
+        this.$refs.progressLine.style.width = value * 100 + '%';
+
+
+        //2.计算从什么地方开始播放
+        let currentTime = this.totalTime * value;
+        this.setCurrentTime(currentTime);
+        // console.log(currentTime);
+      },
+      formatTime(time){
+        // 2.得到两个时间之间的差值(秒)
+        let differSecond = time;
+        // 3.利用相差的总秒数 / 每一天的秒数 = 相差的天数
+        let day = Math.floor(differSecond / (60 * 60 * 24));
+        day = day >= 10 ? day : '0' + day;
+        // 4.利用相差的总秒数 / 小时 % 24;
+        let hour = Math.floor(differSecond / (60 * 60) % 24);
+        hour = hour >= 10 ? hour : '0' + hour;
+        // 5.利用相差的总秒数 / 分钟 % 60;
+        let minute = Math.floor(differSecond / 60 % 60);
+        minute = minute >= 10 ? minute : '0' + minute;
+        // 6.利用相差的总秒数 % 秒数
+        let second = Math.floor(differSecond % 60);
+        second = second >= 10 ? second : '0' + second;
+        return {
+          day: day,
+          hour: hour,
+          minute: minute,
+          second: second
+        }
+      }
+    },
+    props:{
+      totalTime:{
+        type:Number,
+        default:0,
+        required:true
+      },
+      currentTime:{
+        type:Number,
+        default:0,
+        required:true
+      }
+    },
+    computed:{
+      ...mapGetters([
+        'isPlaying',
+        'modeType',
+        'currentIndex',
+        'currentSong',
+        'favoriteList'
+      ])
+    },
+    watch:{
+      isPlaying(newValue,oldValue){
+        if (newValue){
+          this.$refs.play.classList.add('active');
+        } else{
+          this.$refs.play.classList.remove('active');
+        }
+      },
+      modeType(newValue,oldValue){
+        if (newValue === modeType.loop) {
+            this.$refs.mode.classList.remove('shuffle');
+            this.$refs.mode.classList.add('loop');
+        }else if(newValue === modeType.one){
+          this.$refs.mode.classList.remove('loop');
+          this.$refs.mode.classList.add('one');
+          console.log('remove loop add one');
+        }else if(newValue === modeType.shuffle){
+          this.$refs.mode.classList.remove('one');
+          this.$refs.mode.classList.add('shuffle');
+        }
+      },
+      totalTime(newValue,oldValue){
+        let time = this.formatTime(newValue);
+        this.$refs.eleTotalTime.innerHTML = time.minute + ':' + time.second;
+      },
+      currentTime(newValue,oldValue){
+        //1.格式化当前播放的时间
+        let time = this.formatTime(newValue);
+        this.$refs.eleCurrentTime.innerHTML = time.minute + ':' + time.second;
+        //2.根据当前播放时间计算控制进度条的宽度比例
+        let value = newValue / this.totalTime * 100;
+        this.$refs.progressLine.style.width = value + '%';
+      }
     }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -40,25 +180,26 @@
     align-items: center;
     span{
       @include font_size($font_small);
-      @include font_color();
+      //@include font_color();
+      color: #fff;
     }
     .progress-bar{
       width: 100%;
       height: 10px;
       background-color: #fff;
       margin: 0 10px;
-      position: relative;
       .progress-line{
-        width: 50%;
+        width: 0;
         height: 100%;
         background-color: #ccc;
+        position: relative;
         .progress-dot{
           width: 20px;
           height: 20px;
           background-color: #fff;
           border-radius:50%;
           position: absolute;
-          left: 50%;
+          left: 100%;
           top: 50%;
           transform:translateY(-50%);
         }
@@ -77,19 +218,33 @@
       height: 84px;
     }
       .mode{
-          @include bg_img('../../assets/images/loop');
+          &.loop{
+            @include bg_img('../../assets/images/loop');
+          }
+          &.one{
+            @include bg_img('../../assets/images/one');
+          }
+          &.shuffle{
+            @include bg_img('../../assets/images/shuffle');
+          }
       }
       .prev{
           @include bg_img('../../assets/images/prev');
       }
       .play{
           @include bg_img('../../assets/images/play');
+          &.active{
+            @include bg_img('../../assets/images/pause');
+          }
       }
       .next{
         @include bg_img('../../assets/images/next');
       }
       .favorite{
-        @include bg_img('../../assets/images/favorite');
+        @include bg_img('../../assets/images/un_favorite');
+        &.active{
+          @include bg_img('../../assets/images/favorite');
+        }
       }
   }
 }
