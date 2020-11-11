@@ -12,6 +12,7 @@
  import MiniPlayer from '../components/Player/MiniPlayer'
  import ListPlayer from '../components/Player/ListPlayer'
  import {mapGetters,mapActions} from 'vuex'
+ import { getRandomIntInclusive, setLocalStorage, getLocalStorage } from '../tools/tools'
  import modeType from '../store/modeType'
   export default {
     name: "Player",
@@ -23,7 +24,9 @@
     methods:{
       ...mapActions([
         'setCurrentIndex',
-        'setFavoriteList'
+        'setFavoriteList',
+        'setHistorySong',
+        'setHistoryList'
       ]),
       timeupdate(e){
         this.currentTime = e.target.currentTime;
@@ -37,16 +40,11 @@
           this.$refs.audio.play();
         }else if(this.modeType === modeType.shuffle){
           //随机播放
-          let index = this.getRandomIntInclusive(0,this.songs.length - 1);
+          let index = getRandomIntInclusive(0,this.songs.length - 1);
           this.setCurrentIndex(index);
         }
       },
-      //得到有范围的随机数函数
-        getRandomIntInclusive(min, max) {
-         min = Math.ceil(min);
-         max = Math.floor(max);
-         return Math.floor(Math.random() * (max - min + 1)) + min; //含最大值，含最小值
-       }
+
     },
     computed:{
         ...mapGetters([
@@ -56,13 +54,15 @@
           'curTime',
           'modeType',
           'songs',
-          'favoriteList'
+          'favoriteList',
+          'historyList'
         ])
     },
     watch:{
       //若点击了播放修改isPlaying为true，则开始播放
       isPlaying(newValue,oldValue){
         if (newValue){
+          this.setHistorySong(this.currentSong);
           this.$refs.audio.play();
         } else{
           this.$refs.audio.pause();
@@ -73,7 +73,9 @@
            this.$refs.audio.oncanplay = () =>{
              //切换歌曲重新获取时长
              this.totalTime = this.$refs.audio.duration;
+             //若点击了播放修改isPlaying为true，则开始播放
              if (this.isPlaying){
+               this.setHistorySong(this.currentSong);
                this.$refs.audio.play();
              }else{
                this.$refs.audio.pause();
@@ -85,14 +87,30 @@
       },
       //监听收藏列表的变化
       favoriteList(newValue,oldValue){
-        window.localStorage.setItem('favoriteList',JSON.stringify(newValue));
+        //数据持久化
+        // window.localStorage.setItem('favoriteList',JSON.stringify(newValue));
+        setLocalStorage('favoriteList',newValue);
+      },
+      //监听历史歌曲列表变化
+      historyList(newValue,oldValue){
+        //数据持久化
+        // window.localStorage.setItem('historyList',JSON.stringify(newValue));
+        setLocalStorage('historyList',newValue);
       }
     },
     created(){
-      let list = JSON.parse(window.localStorage.getItem('favoriteList'));
+      //创建的时候获取持久化的数据
+      // let favoriteList = JSON.parse(window.localStorage.getItem('favoriteList'));
+      let favoriteList = getLocalStorage('favoriteList');
       //设置给favoriteList
-      if (list === null) {return;}
-      this.setFavoriteList(list);
+      if (favoriteList === null) {return;}
+      this.setFavoriteList(favoriteList);
+
+      // let historyList = JSON.parse(window.localStorage.getItem('historyList'));
+      let historyList = getLocalStorage('historyList');
+      //设置给historyList
+      if (historyList === null){return;}
+      this.setHistoryList(historyList);
     },
     mounted() {
       this.$refs.audio.oncanplay = () =>{

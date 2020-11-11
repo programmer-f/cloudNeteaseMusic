@@ -13,5 +13,7 @@ export default {
   currentLyric:{},
   curTime:0,
   //收藏的歌曲
-  favoriteList:[]
+  favoriteList:[],
+  //历史播放的歌曲
+  historyList:[]
 }
