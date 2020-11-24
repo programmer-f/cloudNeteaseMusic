@@ -14,6 +14,7 @@ const Detail = () => import('../views/Detail');
 const Singer = () => import('../views/Singer');
 const Rank = () => import('../views/Rank');
 const Search = () => import('../views/Search');
+const Account = () => import('../views/Account');
 // const Recommend = (reslove)=>{
 //   import('../views/Recommend').then((module)=>{
 //       reslove(module);
@@ -51,6 +52,7 @@ const routes = [
   { path: '/singer', component: Singer },
   { path: '/rank', component: Rank },
   { path: '/search', component: Search },
+  {path:'/account',component:Account}
 ]
 
 const router = new VueRouter({

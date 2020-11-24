@@ -81,7 +81,7 @@ export default {
   [SET_FAVORITE_SONG](state,song){
     //收藏的时候先看一下收藏列表里面有没有当前这首歌，如果没有，再收藏
     let result = state.favoriteList.find(currentValue =>{
-      return currentValue === song;
+      return currentValue.id === song.id;
     });
     if (result === undefined){
       state.favoriteList.push(song);
@@ -92,7 +92,7 @@ export default {
   },
   [SET_HISTORY_SONG](state,song){
     let result = state.historyList.find(currentValue=>{
-      return currentValue === song;
+      return currentValue.id === song.id;
     });
     if (result === undefined){
       if (state.historyList.length > 30){
