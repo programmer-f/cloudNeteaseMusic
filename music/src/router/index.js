@@ -1,12 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 Vue.use(VueRouter)
-//定义组件
-// import Singer from '../views/Singer'
-// import Recommend from '../views/Recommend'
-// import Rank from '../views/Rank'
-// import Search from '../views/Search'
 
 // 实现组件的按需加载
 const Recommend = () => import('../views/Recommend');
@@ -15,31 +9,12 @@ const Singer = () => import('../views/Singer');
 const Rank = () => import('../views/Rank');
 const Search = () => import('../views/Search');
 const Account = () => import('../views/Account');
-// const Recommend = (reslove)=>{
-//   import('../views/Recommend').then((module)=>{
-//       reslove(module);
-//   })
-// };
-// const Singer = (reslove)=>{
-//   import('../views/Singer').then((module)=>{
-//       reslove(module);
-//   })
-// };
-// const Rank = (reslove)=>{
-//   import('../views/Rank').then((module)=>{
-//       reslove(module);
-//   })
-// };
-// const Search = (reslove)=>{
-//   import('../views/Search').then((module)=>{
-//       reslove(module);
-//   })
-// };
 
 //定义路由
 const routes = [
   { path: '/', redirect: '/recommend' },
-  { path: '/recommend',
+  {
+    path: '/recommend',
     component: Recommend,
     children:[
       {
@@ -49,8 +24,26 @@ const routes = [
       }
     ]
   },
-  { path: '/singer', component: Singer },
-  { path: '/rank', component: Rank },
+  {
+    path: '/singer',
+    component: Singer,
+    children:[
+      {
+        path:'detail/:id/:type',
+        component:Detail
+      }
+    ]
+  },
+  {
+    path: '/rank',
+    component: Rank,
+    children:[
+      {
+        path:'detail/:id/:type',
+        component:Detail
+      }
+    ]
+  },
   { path: '/search', component: Search },
   {path:'/account',component:Account}
 ]

@@ -32,5 +32,17 @@ export default {
         })
     })
   },
+  all(list){
+    return new Promise((resolve,reject)=>{
+      axios.all(list)
+        .then(axios.spread(function (...result) {
+          // 两个请求现在都执行完成
+          resolve(result);
+        }))
+        .catch(err=>{
+          reject(err);
+        })
+    })
+  }
 }
 

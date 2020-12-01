@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueLazyload from 'vue-lazyload'
+// import VConsole from 'vconsole';
+// const vconsole = new VConsole();//移动端的控制台插件
+// Vue.use(vconsole);
 Vue.use(VueLazyload,{
   loading:'./assets/images/loading.png'
 });

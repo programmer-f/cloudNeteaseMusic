@@ -15,7 +15,6 @@
     components:{
       SongListItem
     },
-
     props: {
       songs: {
         type: Array,

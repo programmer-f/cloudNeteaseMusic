@@ -70,7 +70,7 @@
       },
       //监听歌曲发生变化
       currentIndex(){
-           this.$refs.audio.oncanplay = () =>{
+           this.$refs.audio.ondurationchange = () =>{
              //切换歌曲重新获取时长
              this.totalTime = this.$refs.audio.duration;
              //若点击了播放修改isPlaying为true，则开始播放
@@ -113,7 +113,7 @@
       this.setHistoryList(historyList);
     },
     mounted() {
-      this.$refs.audio.oncanplay = () =>{
+      this.$refs.audio.ondurationchange = () =>{
             this.totalTime = this.$refs.audio.duration;
       }
     },
