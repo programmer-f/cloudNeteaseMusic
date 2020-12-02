@@ -1,29 +1,31 @@
 <template>
   <div class="singer">
-    <ScrollView ref="scrollView">
-      <ul class="list-wrapper">
-        <li class="list-group" v-for="(value,index) in list" :key="index" ref="group">
-          <h2 class="group-title">{{keys[index]}}</h2>
-          <ul>
-            <li class="group-item" v-for="(obj,index) in list[index]" :key="index" @click.stop="switchSinger(obj.id)">
-              <img v-lazy="obj.img1v1Url" alt="">
-              <p>{{obj.name}}</p>
-            </li>
-          </ul>
-        </li>
+    <div class="singer-wrapper">
+      <ScrollView ref="scrollView">
+        <ul class="list-wrapper">
+          <li class="list-group" v-for="(value,index) in list" :key="index" ref="group">
+            <h2 class="group-title">{{keys[index]}}</h2>
+            <ul>
+              <li class="group-item" v-for="(obj,index) in list[index]" :key="index" @click.stop="switchSinger(obj.id)">
+                <img v-lazy="obj.img1v1Url" alt="">
+                <p>{{obj.name}}</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </ScrollView>
+      <ul class="list-keys">
+        <li
+          v-for="(key,index) in keys"
+          :key="key"
+          :data-index="index"
+          @touchstart.stop.prevent="touchstart"
+          @touchmove.stop.prevent="touchmove"
+          :class="{'active':currentIndex === index}"
+        >{{key}}</li>
       </ul>
-    </ScrollView>
-    <ul class="list-keys">
-      <li
-        v-for="(key,index) in keys"
-        :key="key"
-        :data-index="index"
-        @touchstart.stop.prevent="touchstart"
-        @touchmove.stop.prevent="touchmove"
-        :class="{'active':currentIndex === index}"
-      >{{key}}</li>
-    </ul>
-    <div class="fix-title" v-show="fixTitle !== ''" ref="fixTitle">{{fixTitle}}</div>
+      <div class="fix-title" v-show="fixTitle !== ''" ref="fixTitle">{{fixTitle}}</div>
+    </div>
     <transition>
       <router-view></router-view>
     </transition>
@@ -158,70 +160,73 @@
   @import '../assets/css/mixin';
   @import '../assets/css/variable';
 .singer{
-  position:fixed;
-  left: 0;
-  right: 0;
-  top: 184px;
-  bottom: 0;
-  overflow: hidden;
-  @include bg_sub_color();
-  .list-wrapper{
-    /*width: 100%;*/
-    /*height: 100%;*/
-    .list-group{
-      .group-title{
-        @include bg_color();
-        @include font_size($font_medium);
-        color: #fff;
-        padding: 10px 20px;
-        box-sizing: border-box;
-      }
-      .group-item{
-        display: flex;
-        padding: 10px 20px;
-        border-bottom: 1px solid #ccc;
-        img{
-          width: 100px;
-          height: 100px;
-          border-radius:50%;
-          overflow: hidden;
-        }
-        p{
-          @include font_size($font_medium);
-          @include font_color();
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-left: 20px;
-        }
-      }
-    }
-  }
-  .list-keys{
-    position: fixed;
-    right: 10px;
-    top: 60%;
-    transform:translateY(-50%);
-    li{
-      @include font_color();
-      @include font_size($font_medium_s);
-      padding: 3px 0;
-      &.active{
-        text-shadow: 0 0 10px #000;
-      }
-    }
-  }
-  .fix-title{
-    position: absolute;
+  width: 100%;
+  height: 100%;
+  .singer-wrapper{
+    position:fixed;
     left: 0;
-    top: 0;
     right: 0;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    color: #fff;
-    @include font_size($font_medium);
-    @include bg_color();
+    top: 184px;
+    bottom: 0;
+    overflow: hidden;
+    @include bg_sub_color();
+    .list-wrapper{
+      .list-group{
+        .group-title{
+          @include bg_color();
+          @include font_size($font_medium);
+          color: #fff;
+          padding: 10px 20px;
+          box-sizing: border-box;
+        }
+        .group-item{
+          display: flex;
+          padding: 10px 20px;
+          border-bottom: 1px solid #ccc;
+          img{
+            width: 100px;
+            height: 100px;
+            border-radius:50%;
+            overflow: hidden;
+          }
+          p{
+            @include font_size($font_medium);
+            @include font_color();
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 20px;
+          }
+        }
+      }
+    }
+    .list-keys{
+      position: fixed;
+      right: 10px;
+      top: 60%;
+      transform:translateY(-50%);
+      li{
+        @include font_color();
+        @include font_size($font_medium_s);
+        padding: 3px 0;
+        &.active{
+          text-shadow: 0 0 10px #000;
+        }
+      }
+    }
+    .fix-title{
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      color: #fff;
+      @include font_size($font_medium);
+      @include bg_color();
+    }
   }
+
 }
   .v-enter{
     transform:translateX(100%);

@@ -9,6 +9,10 @@ import VueLazyload from 'vue-lazyload'
 Vue.use(VueLazyload,{
   loading:'./assets/images/loading.png'
 });
+import Loading from './plugin/loading/index'
+Vue.use(Loading,{
+  title:'正在加载...'
+});
 //fastclick
 import fastclick from 'fastclick'
 fastclick.attach(document.body);
